@@ -9,7 +9,19 @@ User1 = {
         "Demonstration Hell": "Have a duelist without a demo for over a year",
         "Faction Member": "Have at least one duelist in a faction"
     },
-    "Duelists": ["Phayros", "Runic"]
+    "Duelists": ["Phayros", "Runic"],
+    "Cierites": {
+        "MA": [0,0],
+        "FR": [0,0],
+        "ST": [0,0],
+        "IS": [0,0],
+        "GZ": [0,0],
+        "CE": [0,0],
+        "GM": [0,0],
+        "AL": [0,0],
+        "Jewels": 0,
+        "Radiant": 0
+    }
 }
 
 Duelist1 = {
@@ -48,7 +60,19 @@ User2 = {
         "An IQ too High?": "You wouldn't understand",
         "Experienced Duelist": "Have a total count of over 10 duels over all your duelists"
     },
-    "Duelists": ["BHOP", "Ryobu"]
+    "Duelists": ["BHOP", "Ryobu"],
+    "Cierites": {
+        "MA": [0,0],
+        "FR": [0,0],
+        "ST": [0,0],
+        "IS": [0,0],
+        "GZ": [0,0],
+        "CE": [0,0],
+        "GM": [0,0],
+        "AL": [0,0],
+        "Jewels": 0,
+        "Radiant": 0
+    }
 }
 
 Duelist3 = {
