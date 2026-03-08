@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-Bot_Token = os.getenv("BOT_TOKEN")
+Bot_Token = os.getenv("BOT_TOKEN_2")
 
 class Client(discord.Client):
     async def on_ready(self):
