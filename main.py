@@ -4,6 +4,13 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from discord import app_commands
 
+# Database Setup ========
+from tinydb import TinyDB, Query
+Duelist_db = TinyDB("DuelistData.json")
+User_db = TinyDB("UserData.json")
+User = Query()
+# =======================
+
 load_dotenv()
 Bot_Token = os.getenv("BOT_TOKEN_2")
 Test_server_id = os.getenv("TEST_SERVER_ID")
@@ -49,5 +56,22 @@ async def sayHello(interaction: discord.Interaction, printer: str):
 async def sayHello(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(member.mention)
 
+@client.tree.command(name="search_duelist", description="Find a duelist by name", guild=GUILD_ID)
+async def search_duelist(interaction: discord.Interaction, duelist: str):
+    duelist_list_response = []
+    for each in Duelist_db.all():
+        if duelist.lower() in each["Name"].lower():
+            duelist_list_response.append(each)
+
+    # if no match is found
+    if not duelist_list_response:
+        await interaction.response.send_message("Duelist not found")
+        return
+    # if some match is found
+    response = ""
+    for each in duelist_list_response:
+        response += (f'-Duelist: {each["Name"]}, Thread Link: {each["Thread"]} - \n')
+        
+    await interaction.response.send_message(response)
 
 client.run(Bot_Token)
