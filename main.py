@@ -59,9 +59,13 @@ async def sayHello(interaction: discord.Interaction, member: discord.Member):
 @client.tree.command(name="search_duelist", description="Find a duelist by name", guild=GUILD_ID)
 async def search_duelist(interaction: discord.Interaction, duelist: str):
     duelist_list_response = []
+    count=0
     for each in Duelist_db.all():
+        if count >= 10:
+            break
         if duelist.lower() in each["Name"].lower():
             duelist_list_response.append(each)
+            count+=1
 
     # if no match is found
     if not duelist_list_response:
