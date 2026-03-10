@@ -72,10 +72,33 @@ async def search_duelist(interaction: discord.Interaction, duelist: str):
         await interaction.response.send_message("Duelist not found")
         return
     # if some match is found
-    response = ""
+    result_embed = discord.Embed(title=f'Search Result for "{duelist}"')
     for each in duelist_list_response:
-        response += (f'-Duelist: {each["Name"]}, Thread Link: {each["Thread"]} - \n')
-        
-    await interaction.response.send_message(response)
+        link = each["Thread"] if each["Thread"] else "No application link"
+        result_embed.add_field(name=each["Name"], value=f'{link}\nFrom {each["Creator"]}', inline=False)
+
+    await interaction.response.send_message(embed=result_embed)
+
+@client.tree.command(name="search_duelist_alt", description="Find a duelist by name", guild=GUILD_ID)
+async def search_duelist_alt(interaction: discord.Interaction, duelist: str):
+    duelist_list_response = []
+    count=0
+    for each in Duelist_db.all():
+        if count >= 10:
+            break
+        if duelist.lower() in each["Name"].lower():
+            duelist_list_response.append(each)
+            count+=1
+
+    # if no match is found
+    if not duelist_list_response:
+        await interaction.response.send_message("Duelist not found")
+        return
+    # if some match is found
+    result_embed = discord.Embed(title=f'Search Result for "{duelist}"')
+    for each in duelist_list_response:
+        result_embed.add_field(name=f'[{each["Name"]}]({each["Thread"]})' if each["Thread"] else each["Name"], value=f'from {each["Creator"]}', inline=False)
+
+    await interaction.response.send_message(embed=result_embed)
 
 client.run(Bot_Token)
