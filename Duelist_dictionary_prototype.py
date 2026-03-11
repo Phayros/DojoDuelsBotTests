@@ -10,6 +10,7 @@ User1 = {
         "Faction Member": "Have at least one duelist in a faction"
     },
     "Duelists": ["Phayros", "Runic"],
+    "Duelist_ids": [1,2],
     "Cierites": {
         "MA": [0,0],
         "FR": [0,0],
@@ -26,6 +27,7 @@ User1 = {
 
 Duelist1 = {
     "Name": "Phayros",
+    "Duelist_id": 1,
     "Creator": "phayros",
     "Icon": "https://f2.toyhou.se/file/f2-toyhou-se/characters/17064943?1718036644",
     "Thread": "https://discord.com/channels/108249481656418304/1223293645080236042",
@@ -41,6 +43,7 @@ Duelist1 = {
 
 Duelist2 = {
     "Name": "Runic",
+    "Duelist_id": 2,
     "Creator": "phayros",
     "Icon": "https://f2.toyhou.se/file/f2-toyhou-se/characters/17843172?1662253664",
     "Thread": False,
@@ -77,6 +80,7 @@ User2 = {
 
 Duelist3 = {
     "Name": "BHOP",
+    "Duelist_id": 3,
     "Creator": "corvidcreek",
     "Icon": False,
     "Thread": "https://discord.com/channels/108249481656418304/1385975535515205712",
@@ -92,6 +96,7 @@ Duelist3 = {
 
 Duelist4 = {
     "Name": "Ryobu",
+    "Duelist_id": 4,
     "Creator": "corvidcreek",
     "Icon": False,
     "Thread": "https://discord.com/channels/108249481656418304/1271162755319332975",
