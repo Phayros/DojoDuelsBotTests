@@ -223,7 +223,7 @@ class Duelist_template():
     def import_dict(self, imported_dict: dict):
         try:
             self.name = imported_dict["Name"]
-            self.id = imported_dict["Id"]
+            self.id = imported_dict["Duelist_id"]
             self.creator = imported_dict["Creator"]
             self.icon = imported_dict["Icon"]
             self.thread = imported_dict["Thread"]
@@ -293,6 +293,95 @@ async def Add_duelist(interaction: discord.Interaction, duelist_name: str):
         await interaction.response.send_message(embed=return_embed)
     return
     
+@client.tree.command(name="duelist_profile", description="Shows the information of a duelist", guild=GUILD_ID)
+async def Find_duelist(interaction: discord.Interaction, duelist_name: str):
+    duelist = Duelist_template()
+    duelist_data = Duelist_db.search(Db_Query.Name == duelist_name)
+    if not duelist_data:
+        return_embed = discord.Embed(title=f'Duelist with the name {duelist_name} not found', colour=discord.Colour.red())
+        await interaction.response.send_message(embed=return_embed)
+    else:
+        duelist.import_dict(duelist_data[0])
 
+    return_embed = discord.Embed(title=duelist.name)
+    return_embed.add_field(name="Creator", value=duelist.creator, inline=False)
+    return_embed.set_thumbnail(url=duelist.icon)
+    return_embed.add_field(name="Information", value=duelist.information, inline=False)
+    return_embed.add_field(name="Thread", value=duelist.thread, inline=False)
+    return_embed.add_field(name="Gelta", value=duelist.gelta, inline=False)
+    return_embed.add_field(name="Medium", value=f'{"Animated "if duelist.medium["Animated"] else ""}{"Comic "if duelist.medium["Comic"] else ""}{"Written "if duelist.medium["Written"] else ""}', inline=False)
+    return_embed.add_field(name="Win/Loss/Tie", value=f'{duelist.win_loss_tie[0]} / {duelist.win_loss_tie[1]} / {duelist.win_loss_tie[2]}', inline=False)
+
+    await interaction.response.send_message(embed=return_embed)
+
+
+def is_iterable(obj):
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
+    
+
+@client.tree.command(name="user_profile", description="Shows the information of your profile or the profile of someone else", guild=GUILD_ID)
+async def user_profile(interaction: discord.Interaction, discord_tag: str = ""):
+    if not discord_tag:
+        search = User_db.search(Db_Query.Id == interaction.user.name)
+        if not search:
+            return_embed = discord.Embed(title=f'User {interaction.user.name} is not registered', colour=discord.Colour.red())
+            await interaction.response.send_message(embed=return_embed)
+            return
+        else:
+            UserCheck = User_template()
+            UserCheck.import_dict(search[0])
+    else:
+        search = User_db.search(Db_Query.Id == discord_tag)
+        if not search:
+            return_embed = discord.Embed(title=f'User {discord_tag} is not registered', colour=discord.Colour.red())
+            await interaction.response.send_message(embed=return_embed)
+            return
+        else:
+            UserCheck = User_template()
+            UserCheck.import_dict(search[0])
+
+    gelta_count = 0
+    Win_count = 0
+    Loss_count = 0
+    Tie_count  = 0
+    Duelist_info = []
+    for each in UserCheck.Duelist_ids:
+        Duelist = Duelist_db.get(doc_id=each)
+        gelta_count += Duelist["Gelta"]
+        Win_count += Duelist["Win_Loss_Tie"][0]
+        Loss_count += Duelist["Win_Loss_Tie"][1]
+        Tie_count += Duelist["Win_Loss_Tie"][2]
+        Duelist_name = Duelist["Name"]
+        Duelist_thread = Duelist["Thread"]
+        Duelist_info.append([Duelist_name,Duelist_thread])
+    
+    cierite_total = 0
+    for each in UserCheck.Cierites:
+        if is_iterable(UserCheck.Cierites[each]):
+            for each2 in UserCheck.Cierites[each]:
+                cierite_total += each2
+        else:
+            cierite_total += UserCheck.Cierites[each]
+
+    return_embed = discord.Embed(title=UserCheck.Id)
+    return_embed.set_thumbnail(url=UserCheck.icon_url)
+    return_embed.add_field(name="Gelta Count", value=gelta_count, inline=False)
+    return_embed.add_field(name="Wins", value=Win_count)
+    return_embed.add_field(name="Losses", value=Loss_count)
+    return_embed.add_field(name="Ties", value=Tie_count)
+    return_embed.add_field(name="Cierites", value=cierite_total, inline=False)
+    for each in Duelist_info:
+        return_embed.add_field(name=each[0], value=each[1] if each[1] else "No thread link", inline=False)
+
+
+    await interaction.response.send_message(embed=return_embed)
+
+@client.tree.command(name="edit_user", description="Edit your profile information", guild=GUILD_ID)
+async def user_profile(interaction: discord.Interaction, discord_tag: str = ""):
+    return
 
 client.run(Bot_Token)
