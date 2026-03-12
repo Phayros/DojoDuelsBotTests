@@ -199,8 +199,8 @@ class Duelist_template():
         self.information = ""
         self.gelta = 0
         self.medium = {
-            "Animated": True,
-            "Comic": True,
+            "Animated": False,
+            "Comic": False,
             "Written": False
         }
         self.win_loss_tie = [0,0,0]
@@ -229,12 +229,8 @@ class Duelist_template():
             self.thread = imported_dict["Thread"]
             self.information = imported_dict["Information"]
             self.gelta = imported_dict["Gelta"]
-            self.medium = {
-                "Animated": True,
-                "Comic": True,
-                "Written": False
-            }
-            self.win_loss_tie = [0,0,0]
+            self.medium = imported_dict["Medium"]
+            self.win_loss_tie = imported_dict["Win_Loss_Tie"]
         except Exception as e:
             print(f'Error importing dict: {e}')
         return
@@ -380,8 +376,78 @@ async def user_profile(interaction: discord.Interaction, discord_tag: str = ""):
 
     await interaction.response.send_message(embed=return_embed)
 
-@client.tree.command(name="edit_user", description="Edit your profile information", guild=GUILD_ID)
-async def user_profile(interaction: discord.Interaction, discord_tag: str = ""):
+@client.tree.command(name="edit_duelist", description="Edit your duelist information", guild=GUILD_ID)
+async def user_profile(interaction: discord.Interaction, duelist: str, edit_gelta: int = 0, edit_icon: str = "", edit_thread: str = "", edit_info: str = "", add_win: int = 0, add_loss: int = 0, add_tie: int = 0, reset_win_ratio: bool = False, change_animated: bool = False, change_comic: bool = False, change_written: bool = False):
+    # Check if user is registered
+    search = User_db.search(Db_Query.Id == interaction.user.name)
+    if not search:
+        return_embed = discord.Embed(title=f'User {interaction.user.name} is not registered', colour=discord.Colour.red())
+        await interaction.response.send_message(embed=return_embed)
+        return
+    else:
+        UserCheck = User_template()
+        UserCheck.import_dict(search[0])
+
+    if not UserCheck.Duelist:
+        return_embed = discord.Embed(title=f'User {interaction.user.name} does not own any duelist', colour=discord.Colour.red())
+        await interaction.response.send_message(embed=return_embed)
+        return
+    else:
+        own_duelist = False
+        for i in range(len(UserCheck.Duelist)):
+            if UserCheck.Duelist[i] == duelist:
+                own_duelist = True
+                duelist_search_id = UserCheck.Duelist_ids[i]
+                break
+        if not own_duelist:
+            return_embed = discord.Embed(title=f'User {interaction.user.name} do not own any duelist named {duelist}', colour=discord.Colour.red())
+            await interaction.response.send_message(embed=return_embed)
+            return
+        else:
+            Duelist_data = Duelist_template()
+            Duelist_data.import_dict(Duelist_db.get(doc_id=duelist_search_id))
+
+    if edit_gelta:
+        Duelist_data.gelta = edit_gelta
+    if edit_icon:
+        Duelist_data.icon = edit_icon
+    if edit_thread:
+        Duelist_data.thread = edit_thread
+    if edit_info:
+        Duelist_data.information = edit_info
+    if add_win:
+        Duelist_data.win_loss_tie[0] += add_win
+    if add_loss:
+        Duelist_data.win_loss_tie[1] += add_loss
+    if add_tie:
+        Duelist_data.win_loss_tie[2] += add_tie
+    if reset_win_ratio:
+        Duelist_data.win_loss_tie = [0,0,0]
+    if change_animated:
+        if Duelist_data.medium["Animated"]:
+            Duelist_data.medium["Animated"] = False
+        else:
+            Duelist_data.medium["Animated"] = True
+    if change_comic:
+        if Duelist_data.medium["Comic"]:
+            Duelist_data.medium["Comic"] = False
+        else:
+            Duelist_data.medium["Comic"] = True
+    if change_written:
+        if Duelist_data.medium["Written"]:
+            Duelist_data.medium["Written"] = False
+        else:
+            Duelist_data.medium["Written"] = True
+
+    try:
+        update_duelist_by_id(duelist_search_id,Duelist_data.export_dict(),Duelist_db)
+    except Exception as e:
+        return_embed = discord.Embed(title=f'Error updating the duelist: {e}', colour=discord.Colour.red())
+        await interaction.response.send_message(embed=return_embed)
+        return
+    
+    return_embed = discord.Embed(title=f'Duelist {duelist} from {interaction.user.name} successfully eddited!', colour=discord.Colour.green())
+    await interaction.response.send_message(embed=return_embed)    
     return
 
 client.run(Bot_Token)
