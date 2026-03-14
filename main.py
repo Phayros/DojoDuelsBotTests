@@ -18,6 +18,7 @@ Test_server_id = os.getenv("TEST_SERVER_ID")
 
 
 # First tutorial stuff, I dont remember why this is here, once I make sure removing it dont break the code I'll delete it
+#Class client gives the ability to use all associated bot functionality, it is instanced and contained in "client on line 49
 class Client(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
