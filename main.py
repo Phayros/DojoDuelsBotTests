@@ -18,7 +18,7 @@ Test_server_id = os.getenv("TEST_SERVER_ID")
 
 
 # First tutorial stuff, I dont remember why this is here, once I make sure removing it dont break the code I'll delete it
-#Class client gives the ability to use all associated bot functionality, it is instanced and contained in "client on line 49
+# Class client gives the ability to use all associated bot functionality, it is instanced and contained in "client" on line 49 - Corvid
 class Client(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
@@ -30,7 +30,7 @@ class Client(commands.Bot):
         except Exception as e:
             print(f'Error syncing commands: {e}')
 
-
+# all 3 functions down here can be deleted without issue
     async def on_message(self, message):
         if message.author == self.user:
             return
