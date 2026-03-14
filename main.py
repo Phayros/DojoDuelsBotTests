@@ -377,6 +377,7 @@ async def user_profile(interaction: discord.Interaction, discord_tag: str = ""):
 
     await interaction.response.send_message(embed=return_embed)
 
+# make sure this command can only be used by moderators - Corvid
 @client.tree.command(name="edit_duelist", description="Edit your duelist information", guild=GUILD_ID)
 async def user_profile(interaction: discord.Interaction, duelist: str, edit_gelta: int = 0, edit_icon: str = "", edit_thread: str = "", edit_info: str = "", add_win: int = 0, add_loss: int = 0, add_tie: int = 0, reset_win_ratio: bool = False, change_animated: bool = False, change_comic: bool = False, change_written: bool = False):
     # Check if user is registered
