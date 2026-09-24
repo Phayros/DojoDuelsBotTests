@@ -64,6 +64,27 @@ class UserGroup(app_commands.Group):
         
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name="thread", description="create duelist thread")
+    async def NewThreadDisplay(self, interaction: discord.Interaction, duelist: str, image:discord.Attachment):
+        embed = discord.Embed(title=duelist, description=interaction.user) #creates embed
+        embed.set_thumbnail(url=image)
+        embed.add_field(name="guh", value="bluh")
+
+        await interaction.response.send_message(embed=embed) #sends embed
+
+        attachment_to_file = await image.to_file()
+        channel = interaction.client.get_channel(int(1479982458681430026)) #gets unofficial-duelist channel ID
+
+        result = await channel.create_thread(
+        name=str(f"{duelist}"),
+        content=str("message"),
+        file=attachment_to_file
+        )  #creates thread within channel
+
+        thread = result.thread
+        
+     
+
     @app_commands.command(name="cierites", description="cierite profile stats")
     async def CieriteProfileDisplay(self, interaction: discord.Interaction):
         embed = discord.Embed(title=interaction.user,description="Cierite Profile Stats:")
