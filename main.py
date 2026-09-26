@@ -65,23 +65,38 @@ class UserGroup(app_commands.Group):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="thread", description="create duelist thread")
-    async def NewThreadDisplay(self, interaction: discord.Interaction, duelist: str, image:discord.Attachment):
+    async def NewThreadDisplay(self, interaction: discord.Interaction, duelist: str, duelist_image: discord.Attachment, duelist_insignia: discord.Attachment):
         embed = discord.Embed(title=duelist, description=interaction.user) #creates embed
-        embed.set_thumbnail(url=image)
-        embed.add_field(name="guh", value="bluh")
+        embed.set_thumbnail(url=duelist_insignia)
+        embed.set_image(url=duelist_image)
+        
+        # adds fields for all duelist data
+        duelist_data = [("Owner", "Unknown"),
+                        ("Wins", "0"),
+                        ("Losses", "0"),
+                        ("Medium", "Animated"),
+                        ("Demo", "Link"),
+                        ("Document", "Link"),
+                        ("Current Gelta", "200"),
+                        ("Duels", "2"),
+                        ("Status", "Unavailable")]
+
+        for name, value in duelist_data:
+            embed.add_field(name=name, value=value)
 
         await interaction.response.send_message(embed=embed) #sends embed
 
-        attachment_to_file = await image.to_file()
+        attachment_to_file = await duelist_image.to_file() # converts attachment to image
         channel = interaction.client.get_channel(int(1479982458681430026)) #gets unofficial-duelist channel ID
 
         result = await channel.create_thread(
         name=str(f"{duelist}"),
-        content=str("message"),
         file=attachment_to_file
         )  #creates thread within channel
 
-        thread = result.thread
+        new_thread = interaction.client.get_channel(result.thread.id) #gets id of newly created channel 
+        await new_thread.send(embed=embed) #sends message in thread
+
         
      
 
