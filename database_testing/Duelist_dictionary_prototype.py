@@ -1,3 +1,5 @@
+#script to fill database with 2 users and 4 duelists.
+
 from tinydb import TinyDB, Query
 
 Duelist_db = TinyDB("DuelistData.json")
